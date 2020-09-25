@@ -1,4 +1,3 @@
 <ul>            
-                <li><a href="/">/</a></li>
-                <li><a href="/docs">/docs</a></li>
+                <li><a href="/docs/FixedIncome.html">Fixed Income</a></li>
 </ul>
