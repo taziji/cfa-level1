@@ -1,1 +1,8 @@
 theme: jekyll-theme-minimal
+# --- Required options --- #
+
+# Name of website
+title: CFA LEVEL I NOTES
+
+# Your name to show in the footer
+author: CHI ZHANG
