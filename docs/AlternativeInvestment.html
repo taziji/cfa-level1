@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+        <title>Alternative Investment</title>
+        <style>
+          html {
+            margin: 0;
+            padding: 0;
+          }
+
+          body {
+            margin: 50px 20px;
+            padding: 0;
+            color: #333;
+            font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'PingFang SC',
+                  Helvetica, Arial, 'Microsoft YaHei', 微软雅黑, 黑体, Heiti, sans-serif,
+                  SimSun, 宋体, serif,
+                  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+          }
+
+          body.narrow {
+            max-width: 790px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 20px;
+            padding-right: 20px;
+          }
+
+          .title {
+            min-height: 40px;
+            padding-left: 10px;
+            padding-bottom: 24px;
+            margin-bottom: 20px;
+            line-height: 40px;
+            font-size: 26px;
+            font-weight: 500;
+            border-bottom: 1px solid #e5e6e8;
+          }
+
+          .node-list {
+            margin: 0 0 0 28px;
+            padding: 0;
+            list-style: none;
+          }
+
+          .node {
+            position: relative;
+          }
+
+          .node.drill-node > .content {
+            margin-bottom: 15px;
+            font-size: 20px;
+            line-height: 28px;
+          }
+
+          .node.drill-node > .note {
+            margin-bottom: 10px;
+          }
+
+          .content {
+            min-height: 24px;
+            padding-top: 2px;
+            padding-bottom: 3px;
+            line-height: 24px;
+            font-size: 16px;
+          }
+
+          .note {
+            position: relative;
+            padding-bottom: 2px;
+            line-height: 22px;
+            font-size: 14px;
+            color: #888;
+            white-space: pre-wrap;
+          }
+
+          .content > *,
+          .note > * {
+            padding-top: 2px;
+            padding-bottom: 2px;
+          }
+
+          .note:empty {
+            padding-bottom: 0;
+          }
+
+          .node.finished .content,
+          .node.finished .note {
+            opacity: 0.5;
+          }
+
+          .node.finished > .content {
+            text-decoration: line-through;
+          }
+
+          .heading1 > .content {
+            min-height: 34px;
+            line-height: 34px;
+            font-size: 24px;
+            font-weight: 500;
+          }
+
+          .heading2 > .content {
+            min-height: 30px;
+            line-height: 30px;
+            font-size: 21px;
+            font-weight: 500;
+          }
+
+          .heading3 > .content {
+            min-height: 27px;
+            line-height: 27px;
+            font-size: 19px;
+            font-weight: 500;
+          }
+
+          .mention {
+            padding-left: 2px;
+            padding-right: 2px;
+            color: #3370ff;
+            word-break: break-all;
+            text-decoration: none;
+          }
+
+          .content-link {
+            color: unset;
+            opacity: 0.6;
+            word-break: break-all;
+          }
+
+          .tag {
+            text-decoration: underline;
+            opacity: 0.6;
+          }
+
+          .bold {
+            font-weight: bold;
+          }
+
+          .italic {
+            font-style: italic;
+          }
+
+          .underline {
+            text-decoration: underline;
+          }
+
+          .content .highlight-red,
+          .highlight-red > .content > * {
+            background-color: #fbbfbc;
+          }
+
+          .content .highlight-yellow,
+          .highlight-yellow > .content > * {
+            background-color: #f8e6ab;
+          }
+
+          .content .highlight-blue,
+          .highlight-blue > .content > * {
+            background-color: #bacefd;
+          }
+
+          .content .highlight-cyan,
+          .highlight-cyan > .content > * {
+            background-color: #a9efe6;
+          }
+
+          .content .highlight-pink,
+          .highlight-pink > .content > * {
+            background-color: #fdddef;
+          }
+
+          .content .highlight-olive,
+          .highlight-olive > .content > * {
+            background-color: #bbbfc4;
+          }
+
+          .content .highlight-grey,
+          .highlight-grey > .content > * {
+            background-color: #bbbfc4;
+          }
+
+          .text-color-red {
+            color: #dc2d1e;
+          }
+
+          .text-color-yellow {
+            color: #ffaf38;
+          }
+
+          .text-color-green {
+            color: #75c940;
+          }
+
+          .text-color-blue {
+            color: #3da8f5;
+          }
+
+          .text-color-purple {
+            color: #797ec9;
+          }
+
+          .bullet {
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 9px;
+          }
+
+          .node.collapsed > .bullet {
+            background-color: #dee0e3;
+          }
+
+          .heading1 > .bullet {
+            top: 10px;
+          }
+
+          .heading2 > .bullet {
+            top: 8px;
+          }
+
+          .heading3 > .bullet {
+            top: 6px;
+          }
+
+          .bullet-dot {
+            position: absolute;
+            left: 6px;
+            top: 6px;
+            width: 6px;
+            height: 6px;
+            background-color: rgb(100, 106, 115);
+            border-radius: 3px;
+          }
+
+          .image-list {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+          }
+
+          .image-item {
+            padding-top: 2px;
+            padding-bottom: 8px;
+          }
+
+          .image {
+            display: block;
+            max-width: 100%;
+          }
+
+          .children {
+            position: relative;
+          }
+
+          .note::before,
+          .image-list::before,
+          .children::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -17px;
+            width: 1px;
+            height: 100%;
+            background-color: #dee0e3;
+          }
+
+          .node.drill-node > .note::before,
+          .node.drill-node > .image-list::before,
+          .node.drill-node > .children::before,
+          body.noline .note::before,
+          body.noline .image-list::before,
+          body.noline .children::before {
+            display: none;
+          }
+
+          .node.drill-node > .note,
+          .node.drill-node > .content,
+          .node.drill-node > .image-list,
+          .node.drill-node > .children {
+            margin-left: 10px;
+          }
+
+          body.noline .node-list {
+            margin-right: 20px;
+          }
+
+          .publish {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+          }
+
+          .publish-link {
+            color: #4694FF;
+          }
+
+          @media print {
+            body {
+              margin-top: 0;
+              margin-bottom: 0;
+            }
+          }
+
+          @page {
+            margin-left: 0.25in;
+            margin-right: 0.25in;
+            margin-top: 0.5in;
+            margin-bottom: 0.5in;
+          }
+        </style>
+      </head>
+      <body >
+        <div class="title">Alternative Investment</div>
+        <ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Traditional vs. Alternative investments </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Traditional: long-only investments in </span><span class=" text-color-red">stocks, bonds, and cash</span><span>, etc.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Alternative: other investment vehicles which fall </span><span class=" text-color-red">outside the scope of </span><span class=" text-color-red">traditional</span><span> investments, extensive use of leverage.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The </span><span class=" text-color-red">correlation</span><span> </span><span>between alternative and traditional investments is </span><span class=" text-color-red">low</span><span>. It seems that adding alternative investments to a portfolio </span><span class=" text-color-red">will improve </span><span>both </span><span class=" text-color-red">portfolio risk and expected return</span><span>(risk/return profile).</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Alternative investment return: </span><span class=" text-color-red">leptokurtic, negatively skewed</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">VaR, Sortino ratio</span><span> would be appropriate, not </span><span class=" text-color-red">Sharp ratio</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Characteristics</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Illiquidity</span><span> of underlying investments </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Narrow manage specialization</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Low correlation</span><span> with traditional investments</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Low</span><span> level of </span><span class=" text-color-red">regulation</span><span> and less </span><span class=" text-color-red">transparency</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Limited and potentially </span><span class=" text-color-red">problematic</span><span> historical risk and return data</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Unique</span><span> </span><span class=" text-color-red">legal</span><span> and tax considerations</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Hedge Fund (HF)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Characteristics</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Aggressively</span><span> managed investment portfolios across asset classes. Use of </span><span>leverages, take long and short positions, and/or uses derivatives.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Aimed at higher returns</span><span>, either in absolute or relative sense.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Private investment partnership open to </span><span class=" text-color-red">a limited number of investors</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>willing and able to make a </span><span class=" text-color-red">large initial investment</span><span>.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Hedge fund indices </span><span>may not reflect actual performance, since</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Survivorship bias</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Backfill bias</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Restrictions on redemptions.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Lockup period</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Notice period</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Structures</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Limited partner (LP) </span><span>出钱不出力</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">General partner (GP)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Funds of funds: </span><span>Funds of funds are funds that hold a </span><span class=" text-color-red">portfolio of hedge funds.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Advantage</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>FOFs enable </span><span class=" text-color-red">small investors</span><span> to have returns in hedge funds.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>FOFs have some </span><span class=" text-color-red">expertise</span><span> in conducting </span><span class=" text-color-red">due diligence</span><span> on hedge </span><span>funds.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Negotiate </span><span class=" text-color-red">better redemption terms </span><span>for investors.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>FOFs invest in numerous hedge funds, </span><span class=" text-color-red">diversifying</span><span> across fund </span><span>strategies, investment regions, and management styles.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Disadvantage</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>FOFs managers charge </span><span class=" text-color-red">an additional layer of fees beyond the fees </span><span>charged by the individual hedge funds in the portfolio.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>HF Strategies</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Event-driven strategies (</span><span class=" text-color-red">“bottom up”</span><span> strategy</span><span>)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Merger arbitrage</span><span>: long the stock of the company being acquired, and s</span><span>hort the stock of the acquiring company.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Distressed/restructuring</span><span>: focus on the securities of companies either in </span><span>bankruptcy or perceived to be near to bankruptcy.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Activist shareholder</span><span>: purchase sufficient equity to influence a company's </span><span>policies or direction.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Special situations</span><span>: focus on companies that are currently engaged in </span><span>restructuring activities other than merger/acquisitions and bankruptcy.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Relative value strategies</span><span>  (</span><span>Seek to profit from a </span><span class=" text-color-red">pricing discrepancy</span><span> between related securities</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Macro strategies</span><span> (</span><span class=" text-color-red">“Top-down” approach</span><span>) </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Equity hedge strategies (</span><span>Focused on</span><span class=" text-color-red"> public equity markets</span><span>)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Market Neutral</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Fundamental Growth</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Quantitative Directional</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Short Bias</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Sector Specific</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">HF Fees</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Management fee</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Based on </span><span class=" text-color-red">capital under management</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Incentive fee</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Only earned if the return </span><span class=" text-color-red">exceeds a hurdle rate 先判断hurdle rate</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Based on </span><span class=" text-color-red">profits net </span><span>of (</span><span class=" text-color-red">or before</span><span>) management fee </span><span class=" text-color-red">再</span><span class=" text-color-red">计算Base （fund begin x (return rate - hurdle rate) - Management fee) ,最后</span><span class=" text-color-red">✖️</span><span class=" text-color-red"> Incentive Rate</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>High </span><span class=" text-color-red">water mark</span><span> </span><span> </span><span>highest value reported (</span><span>Protect clients from </span><span class=" text-color-red">paying twice</span><span> for the same performance</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">“2 and 20” </span><span>means 2% management fee and 20% incentive fee for hedge</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Fees, notice and lockup periods are </span><span class=" text-color-red">negotiable</span><span> with potential investors.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span> Private Equity (PE)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span> Investing in </span><span class=" text-color-red">privately</span><span> owned companies or in public companies with the intent to take them </span><span class=" text-color-red">private</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Strategies</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Leveraged buyouts (LBOs): </span><span>acquire companies with a significant percentage of the </span><span class=" text-color-red">purchase price financed through debt</span><span>. </span><span>If debt financing is unavailable or costly, less likely to occur.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Characteristics</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Undervalued/depressed stock price</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Willing management</span><span class=" text-color-red"> (</span><span>Existing management is looking for a deal)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Inefficient companies</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Strong and sustainable cash flow </span><span>(</span><span>make interest payments</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Low leverage </span><span>(e</span><span>asier for PE firms to utilize debt)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Assets</span><span> (p</span><span>hysical assets can be used as security)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Venture capital: </span><span>invest in </span><span class=" text-color-red">private</span><span> companies with </span><span class=" text-color-red">high growth potential.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Stages</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Formative stage</span><span>:</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Angel investing</span><span>: At the idea stage, funds are used to transform </span><span class=" text-color-red">the idea into a business plan</span><span> and to assess market potential. Often provided by individuals.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Seed stage</span><span>: support </span><span class=" text-color-red">product development</span><span> and/or marketing efforts. </span><span class=" text-color-red">The first stage at which VC funds invest.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Early stage</span><span>: help companies </span><span class=" text-color-red">move toward operation but before commercial </span><span>production and sales have occurred.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Later stage</span><span>: after commercial production and sales have begun </span><span class=" text-color-red">but before any IPO</span><span>. </span><span class=" text-color-red">Funds may be used for expansion.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Mezzanine stage</span><span>: prepare to go public. Represent the bridge between the expanding company and the </span><span class=" text-color-red">IPO</span><span>.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Structure (P</span><span>artnerships where the PE firm is the </span><span class=" text-color-red">GP</span><span>, and </span><span>investors are </span><span class=" text-color-red">LPs</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Fee</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Management fees: based on </span><span class=" text-color-red">committed capital.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Incentive fees: GP does not earn an incentive fee until the LPs have received initial investment back. (</span><span class=" text-color-red">LP first =&gt;GP</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Policies that protect LPs (</span><span class=" text-color-red">Clawback provision</span><span>) return any incentive fees until LPs received </span><span>initial investment back and their profits.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Exit strategies</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Trade Sale: sale of a company to a strategic buyer</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>IPO (</span><span class=" text-color-red">BEST</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Recapitalization (Pay LP </span><span>dividend</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Secondary Sale:</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Write-off/Liquidation (</span><span class=" text-color-red">WORST</span><span>)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Development capital: </span><span class=" text-color-red">minority</span><span> equity investment in </span><span class=" text-color-red">mature</span><span> firms that </span><span>are looking for</span><span class=" text-color-red"> expanding or restructuring opportunities</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Distressed investing: buying the </span><span class=" text-color-red">debt</span><span> of </span><span class=" text-color-red">mature</span><span> companies i</span><span class=" text-color-red">n financial </span><span class=" text-color-red">difficulties</span><span>.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Real Estate</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Performance measurements</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Appraisal index: </span><span>use estimates of value (appraisals)  / </span><span class=" text-color-red">u</span><span class=" text-color-red">nderstate volatility</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Repeat sales (transaction-based) index: </span><span class=" text-color-red">sample selection bias</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>REIT index (</span><span>use the prices of publicly traded shares of REITs to construct) - BEST</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>REIT index and </span><span class=" text-color-red">equity returns: high correlation</span><span class=" text-color-red"> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>REIT index and </span><span class=" text-color-red">bond returns: low correlation</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Valuation</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Approach</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Comparable sales appro</span><span>ach</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Income approach:  </span><span class=" text-color-red">NOI (Net Operation Income) / Cap rate (Discount rate-growth rate)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Cost approach</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>REIT valuation </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Income approach: </span><span>Funds from operation </span><span class=" text-color-red">(FFO)/Cap rate</span><span> OR a</span><span>djusted funds from operation</span><span class=" text-color-red">(AFFO)/Cap rate</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Asset based approach: </span><span>REIT’s </span><span class=" text-color-red">NAV</span><span> = </span><span class=" text-color-red">MKT</span><span> value of </span><span class=" text-color-red">assets</span><span> – MKT value of </span><span class=" text-color-red">liabilities</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Commodities</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Relationship between spot prices and expected future prices</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Contango: </span><span class=" text-color-red">Futures price &gt; Spot price</span><span> , </span><span>dominated by long hedgers </span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Backwardation: </span><span class=" text-color-red">Futures price &lt; Spot price</span><span>, </span><span>dominated by short hedgers</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Sources of return and risk</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Price return: </span><span>a long-only investment in commodities derivatives can </span><span>be positive or negative, depending on the direction of </span><span class=" text-color-red">change in the </span><span class=" text-color-red">spot price.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Collateral yield: </span><span class=" text-color-red">an additional return</span><span> that the investor </span><span class=" text-color-red">deposits cash as </span><span class=" text-color-red">collateral </span><span>for the futures contract purchased with the exchange.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Roll yield:  </span><span>since commodity derivative contract expire, a speculator or hedger who wants to maintain a position must </span><span class=" text-color-red">close out the expiring </span><span class=" text-color-red">derivative position and re-establish a new position.  </span><span class=" text-color-red">“Rolling over”</span><span> the position </span><span class=" text-color-red">leads to gains (backwardation) or losses </span><span class=" text-color-red">(contango) </span><span>are termed the roll yield.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Infrastructure</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Characteristics</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">High barriers to entry</span><span class=" text-color-red"> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Stable cash flows</span><span class=" text-color-red"> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Protection against inflation</span><span class=" text-color-red"> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Better match the longer-term liability structure of some investors</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Categories</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Economic vs social</span><span> infrastructure assets</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Brownfield vs. greenfield</span><span> infrastructure investments (老基建/新基建)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Forms of Infrastructure Investments </span><span>MLP</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Invest directly in the underlying assets</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Indirect investment vehicles: ETF or MLP (master limited partenership)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Risk and Returns </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Overview</span><span> </span><span>Risk depends on </span><span class=" text-color-red">underlying asset</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>An inherent risk to many infrastructure investments is </span><span class=" text-color-red">regulatory risk</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul>
+        
+      </body>
+    </html>
+  

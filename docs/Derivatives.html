@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+        <title>Derivatives</title>
+        <style>
+          html {
+            margin: 0;
+            padding: 0;
+          }
+
+          body {
+            margin: 50px 20px;
+            padding: 0;
+            color: #333;
+            font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'PingFang SC',
+                  Helvetica, Arial, 'Microsoft YaHei', 微软雅黑, 黑体, Heiti, sans-serif,
+                  SimSun, 宋体, serif,
+                  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+          }
+
+          body.narrow {
+            max-width: 790px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 20px;
+            padding-right: 20px;
+          }
+
+          .title {
+            min-height: 40px;
+            padding-left: 10px;
+            padding-bottom: 24px;
+            margin-bottom: 20px;
+            line-height: 40px;
+            font-size: 26px;
+            font-weight: 500;
+            border-bottom: 1px solid #e5e6e8;
+          }
+
+          .node-list {
+            margin: 0 0 0 28px;
+            padding: 0;
+            list-style: none;
+          }
+
+          .node {
+            position: relative;
+          }
+
+          .node.drill-node > .content {
+            margin-bottom: 15px;
+            font-size: 20px;
+            line-height: 28px;
+          }
+
+          .node.drill-node > .note {
+            margin-bottom: 10px;
+          }
+
+          .content {
+            min-height: 24px;
+            padding-top: 2px;
+            padding-bottom: 3px;
+            line-height: 24px;
+            font-size: 16px;
+          }
+
+          .note {
+            position: relative;
+            padding-bottom: 2px;
+            line-height: 22px;
+            font-size: 14px;
+            color: #888;
+            white-space: pre-wrap;
+          }
+
+          .content > *,
+          .note > * {
+            padding-top: 2px;
+            padding-bottom: 2px;
+          }
+
+          .note:empty {
+            padding-bottom: 0;
+          }
+
+          .node.finished .content,
+          .node.finished .note {
+            opacity: 0.5;
+          }
+
+          .node.finished > .content {
+            text-decoration: line-through;
+          }
+
+          .heading1 > .content {
+            min-height: 34px;
+            line-height: 34px;
+            font-size: 24px;
+            font-weight: 500;
+          }
+
+          .heading2 > .content {
+            min-height: 30px;
+            line-height: 30px;
+            font-size: 21px;
+            font-weight: 500;
+          }
+
+          .heading3 > .content {
+            min-height: 27px;
+            line-height: 27px;
+            font-size: 19px;
+            font-weight: 500;
+          }
+
+          .mention {
+            padding-left: 2px;
+            padding-right: 2px;
+            color: #3370ff;
+            word-break: break-all;
+            text-decoration: none;
+          }
+
+          .content-link {
+            color: unset;
+            opacity: 0.6;
+            word-break: break-all;
+          }
+
+          .tag {
+            text-decoration: underline;
+            opacity: 0.6;
+          }
+
+          .bold {
+            font-weight: bold;
+          }
+
+          .italic {
+            font-style: italic;
+          }
+
+          .underline {
+            text-decoration: underline;
+          }
+
+          .content .highlight-red,
+          .highlight-red > .content > * {
+            background-color: #fbbfbc;
+          }
+
+          .content .highlight-yellow,
+          .highlight-yellow > .content > * {
+            background-color: #f8e6ab;
+          }
+
+          .content .highlight-blue,
+          .highlight-blue > .content > * {
+            background-color: #bacefd;
+          }
+
+          .content .highlight-cyan,
+          .highlight-cyan > .content > * {
+            background-color: #a9efe6;
+          }
+
+          .content .highlight-pink,
+          .highlight-pink > .content > * {
+            background-color: #fdddef;
+          }
+
+          .content .highlight-olive,
+          .highlight-olive > .content > * {
+            background-color: #bbbfc4;
+          }
+
+          .content .highlight-grey,
+          .highlight-grey > .content > * {
+            background-color: #bbbfc4;
+          }
+
+          .text-color-red {
+            color: #dc2d1e;
+          }
+
+          .text-color-yellow {
+            color: #ffaf38;
+          }
+
+          .text-color-green {
+            color: #75c940;
+          }
+
+          .text-color-blue {
+            color: #3da8f5;
+          }
+
+          .text-color-purple {
+            color: #797ec9;
+          }
+
+          .bullet {
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 9px;
+          }
+
+          .node.collapsed > .bullet {
+            background-color: #dee0e3;
+          }
+
+          .heading1 > .bullet {
+            top: 10px;
+          }
+
+          .heading2 > .bullet {
+            top: 8px;
+          }
+
+          .heading3 > .bullet {
+            top: 6px;
+          }
+
+          .bullet-dot {
+            position: absolute;
+            left: 6px;
+            top: 6px;
+            width: 6px;
+            height: 6px;
+            background-color: rgb(100, 106, 115);
+            border-radius: 3px;
+          }
+
+          .image-list {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+          }
+
+          .image-item {
+            padding-top: 2px;
+            padding-bottom: 8px;
+          }
+
+          .image {
+            display: block;
+            max-width: 100%;
+          }
+
+          .children {
+            position: relative;
+          }
+
+          .note::before,
+          .image-list::before,
+          .children::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -17px;
+            width: 1px;
+            height: 100%;
+            background-color: #dee0e3;
+          }
+
+          .node.drill-node > .note::before,
+          .node.drill-node > .image-list::before,
+          .node.drill-node > .children::before,
+          body.noline .note::before,
+          body.noline .image-list::before,
+          body.noline .children::before {
+            display: none;
+          }
+
+          .node.drill-node > .note,
+          .node.drill-node > .content,
+          .node.drill-node > .image-list,
+          .node.drill-node > .children {
+            margin-left: 10px;
+          }
+
+          body.noline .node-list {
+            margin-right: 20px;
+          }
+
+          .publish {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+          }
+
+          .publish-link {
+            color: #4694FF;
+          }
+
+          @media print {
+            body {
+              margin-top: 0;
+              margin-bottom: 0;
+            }
+          }
+
+          @page {
+            margin-left: 0.25in;
+            margin-right: 0.25in;
+            margin-top: 0.5in;
+            margin-bottom: 0.5in;
+          }
+        </style>
+      </head>
+      <body >
+        <div class="title">Derivatives</div>
+        <ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Derivative Concept</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Framework</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Classes of derivative</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Forward commitment</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Forward</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Is an agreement that obligates one party to buy and the other party to sell a </span><span class=" text-color-red">specific quantity</span><span> of an underlying asset, at </span><span class=" text-color-red">a set price</span><span>, at </span><span class=" text-color-red">a future date</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>A </span><span>forward contract </span><span>is a </span><span class=" text-color-red">bilateral contract</span><span> that obligate sone party to buy and the other party to sell a specific quantity of an underlying asset, at a set price, on a specific date in the future.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Types of forward contracts</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Commodity</span><span> forward contract</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Financial</span><span> forward contract</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Purposes of trading forward contracts</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Hedge</span><span> risk: </span><span>lock the cost in the future, but not sure to make money; </span><span class=" text-color-red">have default risk</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Speculation</span><span>: </span><span>gambling the price movement.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Characteristics</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Each party</span><span> are exposed to</span><span class=" text-color-red"> </span><span class=" text-color-red">default risk </span><span>( or counter party risk)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Zero-sum game</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Difference between forward and future</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/8e3ab302-40be-4e48-a929-a5f74381fd57-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Futures</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Is a specialized version of a forward contract that has been </span><span class=" text-color-red">standardized</span><span> and that trades </span><span class=" text-color-red">on a futures exchange</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Characteristics</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>A forward contract</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Are </span><span class=" text-color-red">regulated</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Guarantee provided by the exchange through the </span><span class=" text-color-red">clearinghouse</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>the </span><span class=" text-color-red">daily settlement </span><span>for gains and losses</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Risk control of futures contract</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Method 1: margin </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Initial margin (</span><span class=" text-color-red">Future 补交到IM，Equity补交到MM</span><span>）</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Maintenance margin</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>If the margin balance is </span><span>lower than the maintenance margin</span><span>, the trader will get a </span><span class=" text-color-red">margin call</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Variation margin</span><span>: used to bring the margin balance back up to the </span><span>initial margin level </span><span class=" text-color-red">(IM - $ in the account)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>difference between equity margin</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/7094d117-8cfe-47c4-a188-b4dabbb281ff-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Method 2: daily price limit</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Method 3: daily settlement （</span><span class=" text-color-red">逐日盯市</span><span>）</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Swap</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Is a series of </span><span class=" text-color-red">forward contracts</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Exchange </span><span class=" text-color-red">a series of cash flows</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Interest rate swaps:</span><span> </span><span>The </span><span class=" text-color-red">plain vanilla</span><span> interest rate swap </span><span>involves trading fixed interest rate </span><span>payments for floating-rate payment (paying fixed and receiving floating).</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Counter parties</span><span>: the parties involved in any swap agreement are </span><span>called the counter parties</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Pay-fixed side</span><span class=" text-color-red">:</span><span> the </span><span class=" text-color-red">counter party that makes fixed-rate</span><span> interest </span><span>payment in exchange for variable interest </span><span>rate.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Pay</span><span class=" text-color-red">-floating side</span><span>: the c</span><span class=" text-color-red">ounter party that makes variable-rate </span><span>interest payment in exchange for fixed payment.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Contingent claim</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Option</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The owner has </span><span class=" text-color-red">the right</span><span>, but </span><span class=" text-color-red">not the obligation</span><span> to conduct the transaction.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Right and obligations are </span><span class=" text-color-red">not equal </span><span>only in option contract, so </span><span class=" text-color-red">the long position need to pay option premium.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Call</span><span> option: </span><span>long call &amp; short call  /  </span><span class=" text-color-red">Put</span><span> option: </span><span>long put &amp; short put / </span><span class=" text-color-red">writer of the option</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Prices: </span><span class=" text-color-red">Option premium</span><span> / </span><span>Exercise price (</span><span class=" text-color-red">strike price</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Moneyness (</span><span>Immediate exercise</span><span>): on the long position</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">In the money</span><span>: payoff &gt; 0</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">At the money</span><span>: </span><span>payoff=0</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Out of the money</span><span>: </span><span>payoff&lt;0</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Stock's </span><span class=" text-color-red">current price, S </span><span>and O</span><span>ption's </span><span class=" text-color-red">exercise strike price, X</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/9ce80e03-5ad4-4f09-8ed1-45c13ecda7f7-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Payoff</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/4477f8bb-3a70-45cc-8098-c8e88c3b8075-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Gain/Loss</span><span class=" text-color-red"> (考虑premium之后）</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/2cd8059c-86b2-4273-adb4-bbe277c05a04-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Option value</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Intrinsic value</span><span>: </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Intrinsic value of call option: </span><span class=" text-color-red">c=max[0, S-X]</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Intrinsic value of put option: </span><span class=" text-color-red">p=max[0, X-S]</span><span class=" text-color-red"> </span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Time value</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The difference between the price of an option (called its premium)and its intrinsic value is due to its time value</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Option value=intrinsic value + time value</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Before expiration: option value&gt;intrinsic value</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>At expiration: option value=intrinsic value</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Price of the </span><span class=" text-color-red">option is </span><span class=" text-color-red">more volatile </span><span class=" text-color-red">than prices of underlying stock</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Early Exercise of </span><span class=" text-color-red">American Options (European Options cann't)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>American call options  </span><span class=" text-color-red">(只有大规模分红会提前行权)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>American put options </span><span class=" text-color-red">(标的资产趋向于0会提前行权)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Factors affect the value of an option </span><span class=" text-color-yellow">（</span><span class=" text-color-yellow">记忆负相关和特例）</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/3d7f0924-388b-4531-8cc1-bb511d50dbf0-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>* There is an exception to the general rule that European put option thetas are negative. The put value may increases as the option approaches maturity if the option is deep in-the-money and close to maturity. </span><span class=" text-color-red">（跌到0）</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Credit default swap (CDS)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Structure of derivative markets</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Exchange-trade</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Futures</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Option</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Over-the-counter traded</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Forward</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Swap</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Option</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Advantage &amp; Disadvantage (</span><span class=" text-color-red">Not always increase the risk</span><span>)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Advantage</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Price discovery</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Risk management: </span><span class=" text-color-red">hedge and speculation</span><span class=" text-color-red"> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Lowering</span><span> transaction </span><span class=" text-color-red">costs</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Low</span><span> </span><span class=" text-color-red">capital</span><span> requirement</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Greater </span><span class=" text-color-red">liquidity</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Ease</span><span> of going </span><span class=" text-color-red">short</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Enhance </span><span class=" text-color-red">market efficiency</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Disadvantage</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Too risky -&gt; </span><span class=" text-color-red">High leverage</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Complex instruments.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Sometimes likened to </span><span class=" text-color-red">gambling</span><span>.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Settlement</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>At expiration</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Physical settlement</span><span>: deliver an actual asset, has storage cost, mostly used in commodity forward.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Cash settlement</span><span>: the party that has a position with negative value is obligated to pay that amount to the other party, mostly used in financial forward.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Prior to expiration</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Entering into an</span><span class=" text-color-red"> </span><span class=" text-color-red">opposite forward contract</span><span>: with an expiration date equal to the time remaining on the original contract</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Offsetting with a </span><span class=" text-color-red">different party</span><span>: some </span><span class=" text-color-red">credit risk remains</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Offsetting with the </span><span class=" text-color-red">original party</span><span>: can </span><span class=" text-color-red">avoid credit risk</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Forward Rate Agreements (FRA): </span><span>a forward contract on an interest rate </span><span>(LIBOR 作为标的)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>LIBOR (</span><span>London Interbank Offer Rate</span><span>), Euribor, and FRAs</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>FRA can be viewed as a </span><span class=" text-color-red">forward contract</span><span> to </span><span class=" text-color-red">borrow/lend money at a certain rate at some future date.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The long position</span><span>: is the party that would </span><span>borrow </span><span>the money</span><span> 担心利率上升</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The short position</span><span>: is the party that would </span><span>lend </span><span>the money 担心利率下跌</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Quotation </span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/681209aa-4dce-48e8-8c46-272cde0bf67b-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Put call parity</span><span> (</span><span class=" text-color-red">CK=PS</span><span>)</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/e980dde6-e6bc-41f0-aebc-e016b15eef04-9103975.jpg"
+      style="width: 247px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Fiduciary call</span><span> </span><span> (CK)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>A long position in a European call option with an exercise price of X that </span><span>maturities in T years on a stock.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>A long position in a pure-discount riskless bond that pays X in T years.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Protective put</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>A long position in a European put option with an exercise price of X that </span><span>maturities in T years on a stock.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>A long position in the underlying stock.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Put </span><span class=" text-color-red">– </span><span class=" text-color-red">Call </span><span class=" text-color-red">– </span><span class=" text-color-red">Forward Parity  </span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/f5ef2875-76eb-4b2f-99bc-426b078d4f85-9103975.jpg"
+      style="width: 186px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>FP代入得到</span><span>Put call parity</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/05cc000e-d855-446c-81ac-474e4d42a22a-9103975.jpg"
+      style="width: 134px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Derivative Pricing and Valuation </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The </span><span class=" text-color-red">price</span><span> is the </span><span class=" text-color-red">predetermined price</span><span> in the contract that the long should pay to the short to </span><span class=" text-color-red">buy the underlying asset</span><span> at the settlement date </span><span>（</span><span class=" text-color-red">在衍生产品中定价定的是标的资产的价格</span><span>）</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">The no-arbitrage principle</span><span> (</span><span>Law of one price. </span><span class=" text-color-red">Pricing 遵循的原则</span><span>) </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>a forward contract is the process of determining the </span><span class=" text-color-red">no-arbitrage price</span><span> that will make the value of the contract be </span><span class=" text-color-red">zero to both side</span><span>s at the initiation of the contract</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Forward Price= price that would not permit profitable riskless arbitrage in frictionless markets</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/82ba3c52-9bad-4239-93bd-02e52316bc71-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>General equations (price)</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/d5698857-b74a-4843-869e-0792bd60e981-9103975.jpg"
+      style="width: 233px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Forward contracts on a dividend-paying stock/bond (</span><span class=" text-color-red">cash flow are dividends and coupons</span><span>)</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/84a8aa03-b8e8-4cbb-9b18-71c62584a915-9103975.jpg"
+      style="width: 233px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+<li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/2a5ec2cf-e450-4025-bb98-cda39c256cf7-9103975.jpg"
+      style="width: 227px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>T-bill (zero-coupon bond) forwards (</span><span class=" text-color-red">no carrying cost and carrying benefit</span><span>) </span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/bd959c27-e90b-4136-8eb2-c36dc1757379-9103975.jpg"
+      style="width: 136px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Valuation</span><span> </span><span>of a derivative contract means determining </span><span class=" text-color-red">the payoff </span><span class=" text-color-red">of the contract</span><span> to the long (or short) position at some time during the life of the contract.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Risk neutrality (</span><span>should yield the </span><span>risk-free rate of return</span><span class=" text-color-red"> </span><span class=" text-color-red">Valuation </span><span class=" text-color-red">遵循的原则</span><span class=" text-color-red">)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>General equations (valuation)</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/dcc22fe2-8e89-427f-af48-7344e231571c-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The net cost and benefit is often referred to by the term carry, or </span><span>sometimes </span><span class=" text-color-red">cost of carry. (Benefit-cost, </span><span class=" text-color-red">γ-</span><span class=" text-color-red">θ</span><span class=" text-color-red">)  </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Prices of </span><span class=" text-color-red">Futures vs. Forward </span><span>contracts</span><span class=" text-color-red"> (r高， future由于逐日盯市可以再投资）</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/5da663dc-307b-4717-8e75-b071c0d5aa6a-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Swap Pricing and Valuation (</span><span class=" text-color-red">Equivalence of swaps to bonds</span><span>)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>An interest rate swap is identical to</span><span class=" text-color-red"> issuing a fixed-rate bond and using </span><span class=" text-color-red">the proceeds to buy a floating-rate bond</span><span>.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Binomial model</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The underlying price moves to </span><span class=" text-color-red">two new prices</span><span> at option expiration, where </span><span class=" text-color-red">u=1/d</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/a6c2da31-85e6-42d9-8bf6-94d512e5f0a4-9103975.jpg"
+      style="width: 202px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Risk-neutral probability</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/2680a904-907f-46a4-963a-cf69d23403f3-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>We start with a call option. If the stock goes up to S</span><span>1</span><span>+ </span><span>, the call option willbe worth C</span><span>1</span><span>+</span><span>. If the stock goes down to S</span><span>1</span><span>−</span><span>, the call option will be worth C</span><span>1</span><span>−</span><span>.</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/285bf368-dc4e-4b32-a39f-67565a44e8e6-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul>
+        
+      </body>
+    </html>
+  
