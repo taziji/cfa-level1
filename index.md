@@ -1,3 +1,3 @@
 <ul>            
-                <li><a href="/docs/FixedIncome.html">Fixed Income</a></li>
+                <li><a href="/cfa-level1/docs/FixedIncome.html">Fixed Income</a></li>
 </ul>
