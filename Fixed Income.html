@@ -1,0 +1,4776 @@
+<!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+        <title>Fixed Income</title>
+        <style>
+          html {
+            margin: 0;
+            padding: 0;
+          }
+
+          body {
+            margin: 50px 20px;
+            padding: 0;
+            color: #333;
+            font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'PingFang SC',
+                  Helvetica, Arial, 'Microsoft YaHei', 微软雅黑, 黑体, Heiti, sans-serif,
+                  SimSun, 宋体, serif,
+                  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+          }
+
+          body.narrow {
+            max-width: 790px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 20px;
+            padding-right: 20px;
+          }
+
+          .title {
+            min-height: 40px;
+            padding-left: 10px;
+            padding-bottom: 24px;
+            margin-bottom: 20px;
+            line-height: 40px;
+            font-size: 26px;
+            font-weight: 500;
+            border-bottom: 1px solid #e5e6e8;
+          }
+
+          .node-list {
+            margin: 0 0 0 28px;
+            padding: 0;
+            list-style: none;
+          }
+
+          .node {
+            position: relative;
+          }
+
+          .node.drill-node > .content {
+            margin-bottom: 15px;
+            font-size: 20px;
+            line-height: 28px;
+          }
+
+          .node.drill-node > .note {
+            margin-bottom: 10px;
+          }
+
+          .content {
+            min-height: 24px;
+            padding-top: 2px;
+            padding-bottom: 3px;
+            line-height: 24px;
+            font-size: 16px;
+          }
+
+          .note {
+            position: relative;
+            padding-bottom: 2px;
+            line-height: 22px;
+            font-size: 14px;
+            color: #888;
+            white-space: pre-wrap;
+          }
+
+          .content > *,
+          .note > * {
+            padding-top: 2px;
+            padding-bottom: 2px;
+          }
+
+          .note:empty {
+            padding-bottom: 0;
+          }
+
+          .node.finished .content,
+          .node.finished .note {
+            opacity: 0.5;
+          }
+
+          .node.finished > .content {
+            text-decoration: line-through;
+          }
+
+          .heading1 > .content {
+            min-height: 34px;
+            line-height: 34px;
+            font-size: 24px;
+            font-weight: 500;
+          }
+
+          .heading2 > .content {
+            min-height: 30px;
+            line-height: 30px;
+            font-size: 21px;
+            font-weight: 500;
+          }
+
+          .heading3 > .content {
+            min-height: 27px;
+            line-height: 27px;
+            font-size: 19px;
+            font-weight: 500;
+          }
+
+          .mention {
+            padding-left: 2px;
+            padding-right: 2px;
+            color: #3370ff;
+            word-break: break-all;
+            text-decoration: none;
+          }
+
+          .content-link {
+            color: unset;
+            opacity: 0.6;
+            word-break: break-all;
+          }
+
+          .tag {
+            text-decoration: underline;
+            opacity: 0.6;
+          }
+
+          .bold {
+            font-weight: bold;
+          }
+
+          .italic {
+            font-style: italic;
+          }
+
+          .underline {
+            text-decoration: underline;
+          }
+
+          .content .highlight-red,
+          .highlight-red > .content > * {
+            background-color: #fbbfbc;
+          }
+
+          .content .highlight-yellow,
+          .highlight-yellow > .content > * {
+            background-color: #f8e6ab;
+          }
+
+          .content .highlight-blue,
+          .highlight-blue > .content > * {
+            background-color: #bacefd;
+          }
+
+          .content .highlight-cyan,
+          .highlight-cyan > .content > * {
+            background-color: #a9efe6;
+          }
+
+          .content .highlight-pink,
+          .highlight-pink > .content > * {
+            background-color: #fdddef;
+          }
+
+          .content .highlight-olive,
+          .highlight-olive > .content > * {
+            background-color: #bbbfc4;
+          }
+
+          .content .highlight-grey,
+          .highlight-grey > .content > * {
+            background-color: #bbbfc4;
+          }
+
+          .text-color-red {
+            color: #dc2d1e;
+          }
+
+          .text-color-yellow {
+            color: #ffaf38;
+          }
+
+          .text-color-green {
+            color: #75c940;
+          }
+
+          .text-color-blue {
+            color: #3da8f5;
+          }
+
+          .text-color-purple {
+            color: #797ec9;
+          }
+
+          .bullet {
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 9px;
+          }
+
+          .node.collapsed > .bullet {
+            background-color: #dee0e3;
+          }
+
+          .heading1 > .bullet {
+            top: 10px;
+          }
+
+          .heading2 > .bullet {
+            top: 8px;
+          }
+
+          .heading3 > .bullet {
+            top: 6px;
+          }
+
+          .bullet-dot {
+            position: absolute;
+            left: 6px;
+            top: 6px;
+            width: 6px;
+            height: 6px;
+            background-color: rgb(100, 106, 115);
+            border-radius: 3px;
+          }
+
+          .image-list {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+          }
+
+          .image-item {
+            padding-top: 2px;
+            padding-bottom: 8px;
+          }
+
+          .image {
+            display: block;
+            max-width: 100%;
+          }
+
+          .children {
+            position: relative;
+          }
+
+          .note::before,
+          .image-list::before,
+          .children::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -17px;
+            width: 1px;
+            height: 100%;
+            background-color: #dee0e3;
+          }
+
+          .node.drill-node > .note::before,
+          .node.drill-node > .image-list::before,
+          .node.drill-node > .children::before,
+          body.noline .note::before,
+          body.noline .image-list::before,
+          body.noline .children::before {
+            display: none;
+          }
+
+          .node.drill-node > .note,
+          .node.drill-node > .content,
+          .node.drill-node > .image-list,
+          .node.drill-node > .children {
+            margin-left: 10px;
+          }
+
+          body.noline .node-list {
+            margin-right: 20px;
+          }
+
+          .publish {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+          }
+
+          .publish-link {
+            color: #4694FF;
+          }
+
+          @media print {
+            body {
+              margin-top: 0;
+              margin-bottom: 0;
+            }
+          }
+
+          @page {
+            margin-left: 0.25in;
+            margin-right: 0.25in;
+            margin-top: 0.5in;
+            margin-bottom: 0.5in;
+          }
+        </style>
+      </head>
+      <body >
+        <div class="title">Fixed Income</div>
+        <ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Fixed Income Securities</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Taxation </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Interest Income</span><span>: The income portion of a bond investment is taxed at </span><span>the </span><span class=" text-color-red">ordinary income tax rate</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Municipal debts</span><span> </span><span>is most often </span><span class=" text-color-red">exempt</span><span> from </span><span class=" text-color-red">federal income tax</span><span> and from the income tax of the state;</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Capital gain or loss: </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The tax rate for </span><span class=" text-color-red">long-term </span><span>capital gains (more than </span><span class=" text-color-red">12</span><span> </span><span class=" text-color-red">months</span><span>) is </span><span class=" text-color-red">lower</span><span> than the tax rate for </span><span class=" text-color-red">short-term</span><span> capital gains, and the tax rate for</span><span class=" text-color-red"> short-term capital gains </span><span>is equal to the </span><span class=" text-color-red">ordinary income tax rate</span><span>;</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>税率高低比较，</span><span class=" text-color-red">利息税税率高于资本利得税税率</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Original issue discount (OID) bonds</span><span>: </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">they face no capital gain or loss</span><span>;</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">taxable interest income</span><span>.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Premium bonds:  </span><span>taxable interest income</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Structure of Cash Flow</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Principal repayment structures</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Plain vanilla bond/bullet bonds</span><span>: periodic interest payments and principal </span><span>is paid at maturity</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Balloon payment</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Amortizing loan</span><span>: means the gradual reduction of the amount borrowed over time.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Fully amortizing</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">PRN = 1000, Int = 6%, n=5 years  =&gt;  PV = -1000,FV=0, I/Y =6,n=5 =&gt; PMT=237.4</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/4a3598ca-fb3d-402e-9578-3946890eb3d7-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Partially amortizing: </span><span>the sum of all the scheduled principal repayments is less than the amount borrowed.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>PRN = 1000, Int = 6%, n=5 years, </span><span class=" text-color-red">FV = 200</span><span> =&gt; PV = -1000,FV=200, I/Y =6,n=5 =&gt; </span><span class=" text-color-red">PMT=201.92</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/4511dff8-eeeb-45ce-9b65-3b36e3e226ca-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Sinking fund provision</span><span>: requires the issuer to retire a portion of a bond issue at specific times during the bonds’ life. (</span><span class=" text-color-red">提前偿还本金，相当于回购</span><span>)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Advantages</span><span>: </span><span class=" text-color-red">less credit risk</span><span> due to the periodic redemptions of the principal</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Disadvantages</span><span>: </span><span class=" text-color-red">more reinvestment risk.</span><span> when interest rate decreases, the market price is greater than the redemption price</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>First, investors face </span><span class=" text-color-red">reinvestment risk</span><span>, the risk associated with having to reinvest cash flows at an interest rate that may be lower than the current yield to maturity.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Another potential disadvantage </span><span class=" text-color-red">for investors </span><span>occurs if the issuer has the</span><span class=" text-color-red"> option to repurchas</span><span class=" text-color-red">e</span><span> bonds at </span><span class=" text-color-red">below market prices</span><span>.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Coupon payment structures</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Floating-rate notes</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>CR1=L0+50bps </span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/decdece4-b125-4d4a-b0e7-cb09af468094-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The coupon rate determined at the coupon reset date is the rate that the issuer promises to pay at the </span><span>next coupon date </span><span class=" text-color-red">期初决定期末利率</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The reference rate must match the frequency with which the coupon rate on the bond is reset. </span><span class=" text-color-red">取同频率</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Cap and Floor</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The upper limit is called the </span><span class=" text-color-red">cap</span><span>.</span><span>  </span><span class=" text-color-red">有利于issuer</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The lower limit is called the </span><span class=" text-color-red">floor</span><span>.</span><span> </span><span class=" text-color-red">有利于bonder holder</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>When a floating-rate security has both a upper limit and a lower limit, </span><span>the feature is called a </span><span class=" text-color-red">collar</span><span>.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Inverse floaters </span><span>(also called reverse floaters)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>CR=5%</span><span class=" text-color-red"> -</span><span> 1.5 LIBOR</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Step-up coupon bonds</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/1ade9ea7-cba3-4ccc-ab4c-968c61ab22a8-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Deferred coupon bonds </span><span>/Split coupon bond </span><span>:  </span><span class=" text-color-red">I</span><span class=" text-color-red">nterest payments are deferred </span><span>for a specified number of years.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Credit-linked coupon bonds: </span><span>has a coupon that changes when the</span><span class=" text-color-red"> bond’s credit rating </span><span>changes.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Payment-in-kind coupon bonds: a</span><span>llows the issuer to pay </span><span class=" text-color-red">interest</span><span> </span><span class=" text-color-red">in the form of additional</span><span> amounts of the </span><span class=" text-color-red">bond</span><span> issue rather than as a cash payment.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Index-linked bonds: </span><span>has its </span><span class=" text-color-red">coupon</span><span> payments and/or </span><span class=" text-color-red">principal</span><span> repayment linked to a specified </span><span class=" text-color-red">index</span><span>.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Equity-linked notes (ELN)</span><span>: </span><span class=" text-color-red">no</span><span> periodic </span><span class=" text-color-red">interest</span><span> </span><span class=" text-color-red">payments</span><span>, and the payment </span><span class=" text-color-red">at maturity </span><span>is </span><span>based on an </span><span class=" text-color-red">equity</span><span> </span><span class=" text-color-red">index</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Inflation linked bonds/ linkers</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Index-annuity bonds</span><span>: are </span><span class=" text-color-red">fully amortized bonds</span><span>, in contrast to interest-</span><span>indexed and capital-indexed bonds that are non-amortizing coupon bonds.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Indexed zero-coupon bonds</span><span>: The </span><span class=" text-color-red">principal</span><span> amount to be repaid at maturity </span><span class=" text-color-red">increases</span><span> in line with increases in the</span><span class=" text-color-red"> price index</span><span> during the bond’s life.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Interest-indexed bonds</span><span>: pay a fixed nominal principal amount at maturity, </span><span>and the </span><span class=" text-color-red">inflation</span><span> </span><span class=" text-color-red">adjustment</span><span> applies to the </span><span class=" text-color-red">interest</span><span> payments </span><span class=" text-color-red">only</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Capital-indexed bonds</span><span>: pay a fixed </span><span class=" text-color-red">coupon</span><span> </span><span class=" text-color-red">rate</span><span> but it is applied to a </span><span>principal amount that increases in line with increases in the index during the bond’s life</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Principal protected bonds</span><span>: </span><span>If it will pay equal to or more than its original face value at maturity, </span><span>even when the index has decreases. </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">TIPS</span><span>: pay semiannual coupons, at maturity:</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>It's a </span><span class=" text-color-red">Principal protected bonds</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>If adjusted par value (per bond) is </span><span>greater than </span><span>$1,000 at maturity, the holder </span><span>receives </span><span class=" text-color-red">the </span><span class=" text-color-red">adjusted par value</span><span> </span><span>as the maturity payment.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>If the adjusted par value is </span><span>less than </span><span>$1,000 (due to deflation), holders receive $</span><span class=" text-color-red">1,000</span><span> at maturity as this is the minimum repayment amount.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Coupon Rate 不变</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">PRN 随通胀变化</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Coupon 本身变化因为PRN变化</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>TIPS: </span><span class=" text-color-red">coupon payment </span><span class=" text-color-red"> = </span><span class=" text-color-red">inflation </span><span class=" text-color-red">- </span><span class=" text-color-red">adjusted par value x</span><span class=" text-color-red"> </span><span class=" text-color-red">stated coupon rate / 2</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Contingency Provision</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Callable bonds</span><span> </span><span>are beneficial to the issuer.</span><span>  </span><span>If interest rates fall </span><span>Issuer can </span><span class=" text-color-red">retire</span><span> the bond, and r</span><span class=" text-color-red">eplace it with lower coupon bonds</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/ca30c915-4ab0-49dc-8156-549fb7cf1fd0-9103975.jpg"
+      style="width: 204px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Value callable bond = value of identical non-callable bond- call </span><span>option value</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Three styles of exercise for callable bonds:</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>American style: sometimes referred to as continuously callable, for which the issuer has the right to call a bond at </span><span class=" text-color-red">any time </span><span>starting on the first call date;</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>European style: the issuer has the right to call </span><span class=" text-color-red">a bond only once </span><span>on the call date;</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Bermuda style: the issuer has the right to call bonds </span><span class=" text-color-red">on specified dates</span><span> following the call protection period.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Make a whole call provision</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Putable bonds</span><span> are </span><span>beneficial to the bondholders. </span><span>If interest rates </span><span class=" text-color-red">rise t</span><span class=" text-color-red">he</span><span> bondholders can </span><span class=" text-color-red">sell</span><span> the bond back to the issuer and </span><span class=" text-color-red">get cash</span><span>.</span><span>When the bond is put, the proceeds </span><span class=" text-color-red">c</span><span class=" text-color-red">an be reinvested at a higher </span><span class=" text-color-red">interest rate.</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/87156ebd-1706-4f00-b9fc-c0a4c01ad6c6-9103975.jpg"
+      style="width: 198px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Value of putable bonds </span><span>= value of an identical non-putable bonds + put option value</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Convertible bonds</span><span> are </span><span>beneficial to the bondholders</span><span>.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Conversion price:</span><span> share price when the convertible bond can be converted into shares.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Conversion ratio</span><span>: the number of common shares each bond can be converted into.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Conversion ratio = par value / conversion price</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Conversion value: </span><span>value of conversion bond if converted right now.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Conversion value = market price of stock X conversion ratio</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Conversion premium</span><span>: difference between the convertible bond’s price </span><span>and conversion value</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Conversion parity:</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>At parity: Conversion value = convertible bond’s price</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Above parity: </span><span class=" text-color-red">conversion value &gt; convertible bond’s price</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Below parity: conversion value &lt; convertible bond’s price</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Fixed Income Markets</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Market Classifications</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Primary Market &amp; </span><span>Secondary markets</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Primary market: S</span><span>ales of </span><span class=" text-color-red">newly</span><span> issued bonds</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Public offering (</span><span class=" text-color-red">Underwritten</span><span> offering (包销) / </span><span class=" text-color-red">Best efforts</span><span> offering （代销）/ </span><span class=" text-color-red">Auction</span><span> / </span><span class=" text-color-red">Shelf registration </span><span>（一次注册多次发行）</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span> </span><span>Private placement (</span><span class=" text-color-red">定发</span><span>)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Secondary markets: </span><span>trade of previously issued bonds.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Exchange market</span><span>:</span><span> </span><span>tr</span><span>a</span><span>n</span><span>s</span><span>ac</span><span>t</span><span>i</span><span>o</span><span>n m</span><span>u</span><span>s</span><span>t</span><span> </span><span>ob</span><span>ey</span><span> </span><span>t</span><span>h</span><span>e</span><span> r</span><span>u</span><span>l</span><span>e</span><span>s imposed by the exchange.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">OTC Dealer Market </span><span class=" text-color-red">(largest)</span><span>: dealers post bid and ask price.</span><span> </span><span class=" text-color-red">Spread between bid and ask</span><span> prices are narrower (wider) for liquid </span><span>(less liquid) issues</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Electronic Trading Network (growth)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Issuance </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Bonds issued by Gov related</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Characteristics of Different Kinds of Bonds</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/21db5243-f1a8-478f-a3a0-b77b4212ca2c-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Sovereign</span><span> bonds: </span><span>issued by </span><span class=" text-color-red">national governments </span><span>and backed by their tax power.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>High credit ratings and essentially free of default risk.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Denominated in the local currency or a foreign currency.</span><span> </span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Non-sovereign government bonds</span><span>: issued by governments below the </span><span>national level.</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>High credit quality, but lower than sovereign bonds</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Municipal bond (in the U.S.)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">GO (general obligation)</span><span>/</span><span class=" text-color-red">Tax-Backed Debt</span><span>: Support by taxing power of local government (</span><span class=" text-color-red">Almost no credit risk</span><span>)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Revenue Bonds</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Supported only through revenues generated by projects.</span><span> (</span><span class=" text-color-red">Involve more risk, provide higher yield</span><span>)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Agency/quasi-government bonds</span><span>: </span><span>issued by entities created by national government and may be explicitly or implicitly backed by government. (</span><span class=" text-color-red">准政府</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Supranational bonds(</span><span class=" text-color-red">E.g. World bank, the IMF, the Asian Development Bank.</span><span class=" text-color-red">):</span><span> </span><span>issued by supranational agencies (multilateral agencies) that operate across national.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Bonds issued by Corporation</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Classification</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Bank debt</span><span>: </span><span class=" text-color-red">bilateral</span><span> loan (</span><span>only one bank</span><span>) &amp; </span><span class=" text-color-red">syndicated</span><span> loan (</span><span>several banks</span><span>)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Commercial paper</span><span>: </span><span>short term, unsecured, low rate</span><span> </span><span>(</span><span> is</span><span>sued</span><span> </span><span>by</span><span> c</span><span>or</span><span>po</span><span>r</span><span>at</span><span>i</span><span>o</span><span>n</span><span>s </span><span>of high credit quality) debt. </span><span class=" text-color-red">大公司发行</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Exempt from registration, </span><span class=" text-color-red">directly pla</span><span class=" text-color-red">ced</span><span> </span><span>(sold</span><span> </span><span>d</span><span>ire</span><span>c</span><span>t</span><span>l</span><span>y</span><span> </span><span>b</span><span>y</span><span> </span><span>i</span><span>s</span><span>s</span><span>uer)</span><span> </span><span>or </span><span>dealer placed </span><span>(sold to investor thr</span><span>ough</span><span> </span><span>a</span><span>g</span><span>e</span><span>n</span><span>t</span><span>s</span><span>/</span><span>brok</span><span>e</span><span>r</span><span>s</span><span>)</span><span>.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>There is </span><span class=" text-color-red">very </span><span class=" text-color-red">little secondary</span><span> tr</span><span>ading</span><span> </span><span>of</span><span> </span><span>co</span><span>m</span><span>m</span><span>er</span><span>c</span><span>ial</span><span> </span><span>pap</span><span>e</span><span>r</span><span>.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Reissued or rolled over </span><span>when </span><span>it</span><span> </span><span>matures.</span><span>  </span><span class=" text-color-red">借新债还旧债</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Rollover risk</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>US vs EU (</span><span class=" text-color-red">区分Interest，美式discount basis, 欧式add-on yield | 流动性 T+0 T+2</span><span>)</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/48d7ceef-6647-4074-b7b8-3b1b017d5671-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Corporate bonds</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Serial bond issue</span><span>: with several maturity dates (known at issuance) and </span><span>can be redeemed periodically.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Term maturity structure</span><span>: all the bonds maturing on the same date.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Medium-term notes (MTNs)</span><span>:</span><span> </span><span class=" text-color-red">Various maturities(9 months to 100 years)</span><span>;</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Funding</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Short-Term Funding to </span><span class=" text-color-red">bank</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Customer deposits</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Negotiable Certificate of Deposit (CD) </span><span class=" text-color-red">大额</span><span class=" text-color-red">存单</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Central bank funds marke</span><span>t:   </span><span>banks may buy or sell excess reserves </span><span>deposited at central bank funds rates with their </span><span class=" text-color-red">central banks</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Interbank funds:  </span><span class=" text-color-red">u</span><span class=" text-color-red">nsecured loaned</span><span> between banks for periods of </span><span class=" text-color-red">one </span><span class=" text-color-red">day to a year</span><span>.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Repurchase </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Borrower =&gt; Repurchase</span><span class=" text-color-red">(repo) Agreement:</span><span> </span><span>is the sale of a security with a simultaneous agreement by the seller to buy the same security back from the purchaser at an agreed-on price and future date.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Repurchase agreements </span><span class=" text-color-red">are not regulated</span><span> by the Federal Reserve.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Collateral position of the lender in a repo is better in the event of </span><span>bankruptcy of the dealer. (</span><span class=" text-color-red">liquidity</span><span>)</span><span> </span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Lender =&gt; Reverse repo agreement</span><span>: </span><span>a repurchase agreement is viewed through the </span><span>lens of the cash lending counter party.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Lender 赚的钱 =&gt; Repo rate:   (Repurchase price  -  Selling price )/  Selling price </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Repo term is shorter;</span><span> </span><span>Credit quality of the collateral security is higher;</span><span> </span><span>Collateral security is delivered to the lender;</span><span> </span><span>Interest rate for alternative sources of funds are lower.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">抵押品打折扣 =&gt; Repo margin/haircut</span><span>:  </span><span class=" text-color-red">(Market Value - Selling price ) / MV</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Repo term is shorter;</span><span> </span><span>Credit quality of the collateral security is higher;</span><span> </span><span>Credit quality of the borrower is higher;</span><span> </span><span>Collateral security is in high demand or low supply. </span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Structured financial instruments </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Four broad sector of financial instruments （</span><span class=" text-color-red">除</span><span class=" text-color-red"> asset backed securities (ABS)</span><span class=" text-color-red">collateralized debt obligations (CDOs)以外</span><span>）</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Capital protected instruments;</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The combination of the </span><span class=" text-color-red">zero coupon bond and the call option</span><span> can be </span><span>prepackaged as a structured financial instrument called a </span><span class=" text-color-red">guarantee certificate</span><span>.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield enhancement instruments;</span><span> </span><span class=" text-color-red">(higher coupon rate)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield enhancement refers to increasing risk exposure in the hope of </span><span>realizing a higher expected return. </span><span class=" text-color-red">A </span><span class=" text-color-red">credit linked note (CLN) </span><span>is an </span><span>example of a yield enhancement instrument;</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Participation instruments;</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>a participation instrument is one that allows </span><span>investors to participate in the return of an underlying asset, such as </span><span class=" text-color-red">Floating-</span><span class=" text-color-red">rate bonds</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>do</span><span class=" text-color-red"> not offer capital protection</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Leveraged instruments.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Leveraged instruments are structured financial instruments created to </span><span class=" text-color-red">magnify</span><span> returns and offer the possibility of high payoffs from small </span><span>investments, </span><span class=" text-color-red">such as </span><span class=" text-color-red">inverse floater </span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Fixed Income Valuation</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Pricing Bonds with Single Discount Rate</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield to Maturity (YTM): </span><span class=" text-color-red">Internal rate of return IRR</span><span>, implied </span><span class=" text-color-red">market discount rate</span><span class=" text-color-red"> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Assumptions</span><span>:</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>hold the bond </span><span class=" text-color-red">until maturity</span><span class=" text-color-red"> </span><span class=" text-color-red">ful</span><span class=" text-color-red">l</span><span>, </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>timely coupon, principal payments (</span><span class=" text-color-red">no default</span><span>)</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">coupons are reinvested</span><span> at original YTM</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Calculation</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Annual -coupon bond</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/e59ef9f4-c8bd-4a88-a37e-0f105d272427-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Semiannual-coupon bond</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/3d76d4fc-f8f9-421c-b00f-857f2eb3ab60-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Relationships Between </span><span class=" text-color-red">Price and Yield</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/6981c413-a21e-43de-a953-77489199efbd-9103975.jpg"
+      style="width: 212px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>A bond’s </span><span class=" text-color-red">price and YTM are </span><span class=" text-color-red">inversely related</span><span>.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>A bond will be priced at a </span><span class=" text-color-red">discount</span><span> (premium) </span><span>to par value if </span><span class=" text-color-red">coupon rate is </span><span class=" text-color-red">less</span><span> (more) </span><span>than its </span><span class=" text-color-red">YTM</span><span>.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>For a given change in yield, the </span><span>percentage </span><span class=" text-color-red">price increase is </span><span class=" text-color-red">greater </span><span class=" text-color-red">than the percentage price decrease</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Relationships Between </span><span class=" text-color-red">Price and Time</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/e815bb68-f77b-45f1-a963-85a2c14fabbc-9103975.jpg"
+      style="width: 216px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Arbitrage-free valuation （</span><span class=" text-color-red">不同时间点的</span><span class=" text-color-red">即期利率进行折现</span><span>）</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Spot rates</span><span>: </span><span class=" text-color-red">a sequence of market discount rates </span><span>that correspond to the cash flow dates; yields-to-maturity on zero-coupon bonds maturing at the date of each cashflow.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The no-arbitrage price of a bond is calculated using spot rates</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/b6807b2b-4c14-4980-a90e-79a111618f32-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Quote Convention &amp; Price Matrix</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Full (dirty )</span><span>Price, </span><span class=" text-color-red">Clean (flat) </span><span>Price - </span><span class=" text-color-red">quoted by dealers</span><span>, Accrued Interest</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Full Price = Clean Price +Accrued Interest</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Accrued Interest</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/51437e7e-1f6c-4875-bf0c-51e3e8f3cab6-9103975.jpg"
+      style="width: 244px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Matrix</span><span> </span><span>pricing:</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>a</span><span> </span><span>me</span><span>th</span><span>o</span><span>d</span><span> </span><span>of</span><span> </span><span>e</span><span>stimating the required YTM of bonds that are </span><span>c</span><span>u</span><span>r</span><span>r</span><span>ently</span><span> </span><span class=" text-color-red">not</span><span class=" text-color-red"> </span><span class=" text-color-red">traded</span><span class=" text-color-red"> </span><span class=" text-color-red">or</span><span class=" text-color-red"> </span><span class=" text-color-red">i</span><span class=" text-color-red">n</span><span class=" text-color-red">f</span><span class=" text-color-red">r</span><span class=" text-color-red">e</span><span class=" text-color-red">q</span><span class=" text-color-red">uently traded </span><span>bonds according to the yields of t</span><span>rade</span><span>d</span><span> </span><span>bonds</span><span> </span><span class=" text-color-red">wi</span><span class=" text-color-red">th</span><span class=" text-color-red"> </span><span class=" text-color-red">th</span><span class=" text-color-red">e</span><span class=" text-color-red"> </span><span class=" text-color-red">s</span><span class=" text-color-red">ame credit quality</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">L</span><span class=" text-color-red">inea</span><span class=" text-color-red">r</span><span class=" text-color-red"> </span><span class=" text-color-red">int</span><span class=" text-color-red">e</span><span class=" text-color-red">r</span><span class=" text-color-red">p</span><span class=" text-color-red">o</span><span class=" text-color-red">lation 线性差补法</span><span> </span><span>can be used when the maturities between the valued </span><span>bond</span><span> </span><span>a</span><span>n</span><span>d</span><span> </span><span>the</span><span> </span><span>trade</span><span>d bond are different</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Bond Yield</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield Measures for Fixed-Rate Bonds</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Effective annual rate</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/190d5304-306c-435e-9d81-5cfd6ca98acd-9103975.jpg"
+      style="width: 249px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>For annual-pay bond: effective yield equal to YTM.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Convert an annual percentage rate for m periods per year (APR</span><span>m</span><span>), to an </span><span>annual percentage rate for n per year (APR</span><span>n</span><span>) </span><span class=" text-color-red">用于比较</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/e8554f28-f081-4e10-9bbc-9f395832c083-9103975.jpg"
+      style="width: 248px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Current yield (income or interest yield)</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/aeb5f0eb-307b-4330-8069-ffcbeccbf326-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield measures for money market instruments </span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/ce0270aa-6bc9-4cd4-89e0-d539f065472e-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Bond equivalent yield(investment yield)</span><span> for money market security:</span><span>yield stated on a </span><span class=" text-color-red">365-day add-on rate basis (AOR on 365 days base).</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield to </span><span class=" text-color-red">call (put)</span><span> </span><span>is calculated as a YTM but with the number of periods until </span><span class=" text-color-red">the call (put) price substituted for the number of periods to maturity </span><span class=" text-color-red">and the maturity value. 计算时调整n和FV</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Yield to Worst:</span><span> </span><span>the worst yield outcome of any that are possible given</span><span class=" text-color-red"> the call provisions</span><span> of the bond.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield measures for Floating-rate notes</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Coupon rate = reference rate + quoted margin</span><span>  (</span><span>Quoted margin: </span><span>margin used to calculate the bond coupon payments)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>CR = LIBOR + QM</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Discount rate = reference rate + required margin </span><span class=" text-color-red">(or discount margin)</span><span class=" text-color-red"> </span><span>(</span><span>Required/discount margin</span><span>: margin required to return the FRN to its </span><span>par value at each reset date.)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>DR = LIBOR + DM</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">比较CR和DR得出溢价/平价/折价债券</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Selling at par(credit unchanged): </span><span class=" text-color-red">required margin = quoted margin</span><span class=" text-color-red"> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Selling at discount(downgrade of credit): </span><span class=" text-color-red">quoted margin &lt; required </span><span class=" text-color-red">margin</span><span class=" text-color-red">  (QM&lt;DM)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Selling at premium(upgrade of credit): </span><span class=" text-color-red">quoted margin &gt; required </span><span class=" text-color-red">margin (QM&gt;DM)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield Curve &amp; Spread</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield Curve: </span><span>shows the </span><span class=" text-color-red">term structure </span><span>of interest rates by displaying </span><span class=" text-color-red">yields</span><span> across </span><span class=" text-color-red">different maturities.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Spot curve</span><span>: </span><span class=" text-color-red">a yield curve for single payments in the future</span><span>, such as zero-coupon bonds or stripped Treasury bonds.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Spot curve for U.S. Treasury bonds is called the zero-curve or strip curve</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield curve for coupon bonds: </span><span>shows the YTM for coupon bonds at various </span><span>maturities, which can be calculated by linear interpolation.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Par curve: </span><span>shows the coupon rates for bonds of various maturities that </span><span>would result in bond prices equal to their par values.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Forward yield curve</span><span>: </span><span>shows the future rates for bonds or money market securities </span><span class=" text-color-red">for the same maturities for annual periods in the future.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Forward Rates: </span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/b4f9c49f-3f57-4165-8286-1ec3da0772c4-9103975.jpg"
+      style="width: 205px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Relationship Between Forward Rates and Spot Rates</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/557ae8e1-ae22-449c-81f2-92c03b9e0fe1-9103975.jpg"
+      style="width: 314px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Valuation</span><span> Using Forward using Forward Rates</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/f225a641-2b44-440e-87f1-a6d2f7bbb493-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield Spread </span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/4eb40774-1b1f-4297-b988-c75bcec7e713-9103975.jpg"
+      style="width: 336px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Benchmark spread: </span><span>the yield spread over a specific benchmark, usually measured in basis points.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">G-spread</span><span>: the benchmark is </span><span class=" text-color-red">government bond</span><span> yield  </span><span class=" text-color-red"> (同期限)</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/2476a543-6d18-4d60-8621-93a4e66c60cd-9103975.jpg"
+      style="width: 336px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Interpolated spread</span><span> (I-spread)</span><span>: the benchmark is </span><span class=" text-color-red">swap rate</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Zero-volatility spread (Z-spread)</span><span class=" text-color-red">:</span><span> is based on the entire benchmark </span><span class=" text-color-red">spot curve</span><span>. It is the constant spread that is added to each spot rate such </span><span>that the present value of the cash flows matches the price of the bond.</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/5f338e42-b806-4601-aa33-76a55cbe6926-9103975.jpg"
+      style="width: 338px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Option-adjusted spread</span><span> (OAS)</span><span>: is the Z-spread minus the theoretical </span><span>value of the embedded call option.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Callable bond: ZS &gt; OAS</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Putable bond: ZS &lt; OAS</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Asset-Backed Securities</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Asset-backed securities</span><span>:</span><span> </span><span class=" text-color-red">Fixed income securities </span><span>that are backed, or </span><span>collateralized, by a </span><span>pool(collection) of </span><span>assets such as loans or receivables are referred to as </span><span>asset-backed securities</span><span>.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Process:  </span><span class=" text-color-red">special purpose vehicles</span><span class=" text-color-red"> (</span><span class=" text-color-red">SPV</span><span class=" text-color-red">) / </span><span class=" text-color-red">asset backed securities (ABS)</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/88fd6514-da45-4b16-8f3d-4c26bc23054c-9103975.jpg"
+      style="width: 262px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Structures</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Credit tranching</span><span>: Different tranches have different risk exposures</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Time tranching:</span><span> </span><span>Bond classes that posses different expected maturities.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>In common, for a securitization to have structures with both credit tranching and time tranching.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Benefits of securitization</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Lowers or </span><span class=" text-color-red">removes the wall between ultimate investors and originating borrowers</span><span>.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Securitization </span><span class=" text-color-red">reduces liquidity risk i</span><span>n the financial system.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Securitization allows for the creation of tradable securities with better liquidity than the original loans on the bank’s balance sheet.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Makes financial markets more efficient and improves liquidity for the underlying financial claims.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Benefits of </span><span class=" text-color-red">SPV</span><span> in securitization: sell the loan to SPV instead of using it as collateral</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Protect</span><span> investors from the issuer’s </span><span class=" text-color-red">bankruptcy</span><span>.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Securitization can have </span><span class=" text-color-red">lower credit cost</span><span> than a corporate bond secured by </span><span>the same collateral.</span><span> </span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Funding cost of issuing an asset-backed bond is less than that of issuing a </span><span class=" text-color-red">corporate bond.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Mortgage-Backed Securities (</span><span class=" text-color-red">MBS</span><span>)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Foreclosure</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Recourse loan</span><span>: the lender has a claim against the borrower for the </span><span>shortfall between the amount of the mortgage balance outstanding and the proceeds received from the sale of the property.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Nonrecourse loan</span><span>: </span><span>the lender does not have such a claim, so the lender </span><span>can </span><span class=" text-color-red">look only to the property</span><span> to recover the outstanding mortgage balance.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Nonrecourse loan =&gt; </span><span class=" text-color-red">Strategic default</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Interest rate of mortgage</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Fixed rate</span><span>: the mortgage rate remains the same during the life of the mortgages.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Adjustable or variable rate</span><span>: The mortgage rate is reset periodically(daily, weekly, monthly, or annually).</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Initial period fixed rate</span><span>: the mortgage rate is fixed for some initial period and is then adjusted.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Amortization schedule</span><span> (</span><span>Periodic mortgage payments assuming no prepayments are made, </span><span>interest payments and scheduled principal repayments)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The scheduled principal repayment is the amount of </span><span class=" text-color-red">reduction of </span><span class=" text-color-red">the outstanding mortgage balance</span><span> and is thus referred to as the </span><span>amortization.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The amortization of a loan: </span><span>gradual reduction of the amount </span><span>borrowed over time.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Fully amortizing loan</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Partially amortizing loan =&gt;  </span><span class=" text-color-red">Balloon payment</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Types of RMBS Agency</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/2cd9525a-0f17-4aba-9322-a90ab3815f0b-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Conforming mortgage</span><span>: a loan satisfies the underwriting standards forinclusion as collateral for an agency RMBS</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Non-conforming mortgage</span><span>: </span><span>a loan fails to satisfy the under writing standards.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Mortgage passthrough Securities (</span><span class=" text-color-red">MPS</span><span>)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>MPS is created when one or more holders of mortgages form a collection of mortgages and sell shares or participation certificates in the pool.</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/2baee5c8-f8ef-40ce-a40b-131ec920d19a-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Mortgage pass-through security</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/b0192454-ef79-403a-bd63-4e7ed9301b0f-9103975.jpg"
+      style="width: 331px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Pass-through rate: </span><span class=" text-color-red">Mortgage rate – Pass-though rate = Servicing fees</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Prepayment risk</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Contraction</span><span> risk: </span><span>occurs as interest rates </span><span class=" text-color-red">f</span><span class=" text-color-red">all</span><span> 还得</span><span class=" text-color-red">快</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Ex</span><span class=" text-color-red">tension</span><span> </span><span>risk: </span><span>occurs as interest rates </span><span class=" text-color-red">rise</span><span> 还得</span><span class=" text-color-red">慢</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Prepayment rates</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Two industry conventions</span><span>: </span><span class=" text-color-red">the </span><span class=" text-color-red">conditional prepayment rate (CPR)</span><span> </span><span>and the </span><span class=" text-color-red">Public Securities Association (PSA) </span><span>prepayment benchmark.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>CPR is </span><span>the </span><span class=" text-color-red">annual rate</span><span> </span><span>at which a mortgage pool balance is assumed to be prepaid during the life of the pool.</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/ba708da2-cc4d-4c90-98ce-d84b8ec85fbd-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Monthly prepayment rate: </span><span>single monthly mortality rate (SMM)</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/08d82d4a-db1d-49ac-8f5e-28282549b622-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Collateralized Mortgage Obligations(</span><span class=" text-color-red">CMO</span><span>)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>CMOs </span><span>are securities issued against </span><span class=" text-color-red">pass-through securities</span><span> for which the </span><span>cash flow have been</span><span class=" text-color-red"> reallocated to different tranches.</span><span class=" text-color-red"> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Types of CMO</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Sequential pay </span><span>tranches  </span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/694698bc-4f2a-4348-8718-eb2a7343ee7a-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>先还A-&gt;B的利息，然后还A-&gt;B的本金</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/fc87c145-0e8e-4a9b-8528-ddee351e7bf7-9103975.jpg"
+      style="width: 287px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Planned amortization class (PAC)</span><span> CMO</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/9943da1c-1af2-4d53-809e-25d19710bdc5-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Initial PAC collar: T</span><span>he lower and upper PSA prepayment assumptions are called the “initial PAC collar” or the “initial PAC band.”</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/a802bb34-8040-4b4e-be5e-6215d088b10c-9103975.jpg"
+      style="width: 304px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Non-agency RMBS</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Non-agency RMBS </span><span class=" text-color-red">not guaranteed</span><span> by Ginnie Mae, Fannie Mae, or FreddieMae</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Differences between Agency and Non-agency securities</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Agency securities</span><span>: </span><span>CMOs are created from </span><span class=" text-color-red">pools of passthrough </span><span class=" text-color-red">securities</span><span>.</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Non-agency securities</span><span>: </span><span>CMOs are created from </span><span class=" text-color-red">unsecuritized </span><span class=" text-color-red">mortgage loans.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>All </span><span class=" text-color-red">non-agency </span><span>securities are </span><span>credit enhanced</span><span>: </span><span class=" text-color-red">external and internal.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Internal credit enhancements</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Senior/subordinated structure</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Reserve funds</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>External credit enhancements</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The most common </span><span class=" text-color-red">third</span><span> </span><span class=" text-color-red">party financial guarantors</span><span> are monoline insurance </span><span>companies, referred to as a monoline insurer</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Commercial mortgage-backed securities (</span><span class=" text-color-red">CMBS</span><span>) 商业地产 </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>CMBS are</span><span class=" text-color-red"> no recourse loans</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Analysis of CMBS securities focuses on </span><span class=" text-color-red">the property and not the </span><span class=" text-color-red">borrower</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/4a5fb199-6323-4cad-aa3b-ead509f2dd5e-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>CMBS basic structure</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Call protection at the structure level</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Call protection </span><span class=" text-color-red">at the loan level</span><span class=" text-color-red"> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Prepayment </span><span class=" text-color-red">lockout</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Defeasance</span><span> 买国债</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Prepayment </span><span class=" text-color-red">penalty</span><span> points</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield maintenance charges( </span><span class=" text-color-red">make-whole charge</span><span>)</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Non-Mortgage Asset-backed Securities (</span><span class=" text-color-red">Non-Mortgage ABS</span><span>)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Auto Loan ABS</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The </span><span class=" text-color-red">cash flows</span><span> for auto loan-backed securities consist of </span><span class=" text-color-red">scheduled</span><span> </span><span class=" text-color-red">monthly</span><span> payments (that is, interest payments and scheduled principal repayments) </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Credit enhancement</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Senior/subordinated structure</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Over collateralization</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Reserve account</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Credit Card Receivable ABS </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">non-amortizing loans</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Cash flow:</span><span> </span><span>Finance charges collected, Fees, Principal repayments.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Lockout periods</span><span>: cash flow paid out based on finance charges collected and fee.</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>After lockout periods: principal no longer reinvested but paid to investors.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Collateralized debt obligation (</span><span class=" text-color-red">CDO</span><span>) 垃圾债买来分层，最高的可以到投资级</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>A security backed by a </span><span>diversified pool of one or more of the following types of debt obligations</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/62297f5d-a3d1-48eb-8d5d-3420ae7cf8c1-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Types of CDO</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/2aa7b962-dfa9-4cc5-8ddd-fd88e1761cfa-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>A </span><span>floating-rate </span><span>security</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Asset manager uses </span><span class=" text-color-red">i</span><span class=" text-color-red">nterest rate swap</span><span> </span><span>to deal with the mismatch</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/dd0f8d2d-7ed3-492f-84cc-c2ce8891c4f1-9103975.jpg"
+      style="width: 271px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Fixed Income Risk and Return</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Source of Return</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Three sources of return:</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Receipt of the promised </span><span class=" text-color-red">coupon</span><span> and </span><span class=" text-color-red">principal</span><span> payments on the </span><span>scheduled dates;</span><span>  持有到期</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Reinvestment</span><span> of coupon payments;</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Potential capital </span><span class=" text-color-red">gains or losses </span><span>on the sale of the bond prior to </span><span>maturity. 不持有到期</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Total return</span><span>: </span><span class=" text-color-red">future value</span><span> of </span><span class=" text-color-red">reinvested</span><span> </span><span class=" text-color-red">coupon</span><span> interest payments and the</span><span class=" text-color-red"> </span><span class=" text-color-red">sale price</span><span> (par value if the bond is held to maturity);</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Annualized holding period return</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/408b95b1-0e82-4f77-9cd1-a45906916259-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Relationship with investment horizon and price risk, reinvestment risk</span><span> </span><span>Duration</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Short</span><span> investment horizon:</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">market</span><span> price risk </span><span class=" text-color-red">&gt;</span><span> </span><span class=" text-color-red">reinvestment</span><span> risk</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>annualized holding period return is </span><span class=" text-color-red">negatively</span><span> related with YTM</span><span> </span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Long</span><span> investment horizon:</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">market</span><span> price risk </span><span class=" text-color-red">&lt;</span><span> </span><span class=" text-color-red">reinvestment</span><span> risk</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>annualized holding period return is </span><span class=" text-color-red">positively</span><span> related with YTM</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Duration</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/c5838779-7fff-449f-924d-2fcd2462b8b5-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Interest rate risk: </span><span class=" text-color-red">the price sensitivity to interest rate changes.</span><span> More </span><span class=" text-color-red">sensitive</span><span>, more possible price </span><span class=" text-color-red">volatility 狭义上指price risk 探讨利率变动对价格的影响</span><span>.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Use duration to measure interest rate risk. The </span><span class=" text-color-red">higher</span><span> </span><span class=" text-color-red">duration</span><span>, </span><span class=" text-color-red">more interest rate risk</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">假设收益率曲线平行移动</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Durations of all option-free bond are positive.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Macaulay duration </span><span class=" text-color-red">考察平均还款期</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/e6ffc6f6-3cf8-4f99-a228-85db17971637-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Weighted average of the time to receipt of the bond’s promised payments. </span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/12631139-b90d-4eae-8a69-954e2c809c6c-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Macaulay duration </span><span class=" text-color-red">between coupon payments with a constant YTM (</span><span class=" text-color-red">“saw-tooth” pattern.</span><span class=" text-color-red">)</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/7d1bd8da-88e2-4d63-b152-dc7458f9f7d4-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Modified duration </span><span class=" text-color-red">考察利率变化引起的价格敏感程度</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/f018a835-0183-4453-b4c2-2014aa140c22-9103975.jpg"
+      style="width: 383px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Provides a linear estimate of the percentage price change for a bond given a 1% change in its yield-to-maturity. </span><span class=" text-color-red">r是期间利率</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/20e456d9-25ce-4886-a8ed-78b1ca5d5227-9103975.jpg"
+      style="width: 259px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>推导</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/d8474d3c-178b-4df3-9421-2dc8e30d46eb-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">修正周期的问题：衡量的时候P和y之间是线性关系，但实际不是。所以如果y1-y0较小，能较正确衡量，但是如果y1-y0较大，就无法准确衡量。</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/212b6a4b-ac9e-4a11-b66b-fe4b4b62dc7d-9103975.jpg"
+      style="width: 218px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Approximate modified duration &amp; </span><span>Effective duration</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/dee3efdb-3be8-48c5-bc25-57894c2e07b5-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Approximate modified duration &amp; </span><span>Effective duration </span><span class=" text-color-red">两者基本一样，区别如下。</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/e4c7ad81-ddd5-4295-851f-69aee85d5f26-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Effective duration </span><span class=" text-color-red">更适用于含权债券，考察了真实的收益率曲线的变化</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/a6683d51-8c43-4866-ac78-7a5eb49d01d3-9103975.jpg"
+      style="width: 186px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Money duration/dollar duration  (Delta y = 1% =&gt; Delta P) </span><span class=" text-color-red">衡量了收益率变化1%带来债券价格的金额的变化，用的是full price</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/ec1aa2f2-8194-465b-937e-767f8b6024f9-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>推导</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/372f4b66-1dc8-4295-bf89-95504afbaf50-9103975.jpg"
+      style="width: 234px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Price value of a basis point (PVBP) </span><span>(Delta y = </span><span class=" text-color-red">0.01%</span><span> =&gt; Delta P) </span><span class=" text-color-red">衡量了收益率变化一个bp带来债券价格的金额的变化</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The money change in full price of a </span><span>bond when its YTM changes by one basis point(0.01%).  </span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/848eeb89-8a14-4d2a-b643-b0995cbc29b6-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Effects of bond characteristics </span><span>on</span><span> </span><span>duratio</span><span>n</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span> </span><span>Longer maturity, higher d</span><span>uration</span><span>.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Lower coupon, higher </span><span>duration.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Lower market yield, </span><span>higher</span><span> </span><span>d</span><span>u</span><span>r</span><span>a</span><span>t</span><span>ion</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Bond with embe</span><span>dded</span><span> </span><span>o</span><span>p</span><span>t</span><span>io</span><span>n</span><span>s</span><span> </span><span>(</span><span>c</span><span>al</span><span>l</span><span>able</span><span> </span><span>b</span><span>o</span><span>n</span><span>d</span><span> </span><span>&amp;</span><span> </span><span>puta</span><span>ble bond) has lower duration.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Duration and Maturity</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/f0c12a42-b97d-4603-a7e3-ffdd15eb587f-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>D </span><span>perpetuity </span><span>= (1+YTM)/YTM  </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>D </span><span>zero-coupon bond </span><span>= M </span><span>zero-coupon bond</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>D </span><span>discount </span><span>&gt; D </span><span>premium</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>D </span><span>discount </span><span>随着时间的变化先增加后减小，并不是时间越长，</span><span>duration</span><span>越大</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/9296686f-1e93-4f64-9fee-44d307568e21-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>解释</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/0fe256eb-9328-4c41-b10f-5dd63a6f8418-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>P</span><span>o</span><span>rtfolio duration </span><span class=" text-color-red">用市价加权平均</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">P</span><span class=" text-color-red">o</span><span class=" text-color-red">rtfolio duration = w</span><span class=" text-color-red">1</span><span class=" text-color-red">D</span><span class=" text-color-red">1</span><span class=" text-color-red">+ w</span><span class=" text-color-red">2</span><span class=" text-color-red">D</span><span class=" text-color-red">2 </span><span class=" text-color-red">+ ......+w</span><span class=" text-color-red">n</span><span class=" text-color-red">D</span><span class=" text-color-red">n</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Limitations</span><span>: the measure of portfolio duration implicitly </span><span class=" text-color-red">assumes a </span><span class=" text-color-red">parallel shift in the yield curve.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Duration gap=Macaulay duration–investment horizon </span><span class=" text-color-red">资产匹配负债，相等最佳</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>If investment horizon &gt; Macaulay duration, then reinvestment risk dominates </span><span>price risk, investor’s risk is to lower interest rates.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>If investment horizon = Macaulay duration, then reinvestment risk offsets </span><span>price risk.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>If investment horizon &lt; Macaulay duration, then price risk dominates </span><span>reinvestment risk, investor’s risk is to higher interest rates.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Convexity</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>a measure of the curvature of the </span><span>price-yield curve</span><span class=" text-color-red">. P对r求二阶导，Duration对r求一阶导</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Approximate convexity: </span><span>a measure of the curvature of the price-yield curve.</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/b9f70719-211f-4036-ac69-ea8fee99a32c-9103975.jpg"
+      style="width: 313px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Effective convexity: </span><span>appropriate for bonds </span><span class=" text-color-red">with embedded options.</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/255a6772-d42c-45ee-a552-7acae850d056-9103975.jpg"
+      style="width: 331px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>推导</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/5494bee0-43d6-4b46-9248-990fe79c9e8b-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The convexity adjustment is always positive when convexity is positive</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/067ab05c-a363-4280-8dae-324235dfc304-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>callable and putable convexity</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>For callable bond</span><span>, the effective convexity may be </span><span class=" text-color-red">negative</span><span> if yield is lower</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/77e7e7a5-139c-4c04-a944-ee9132e333d3-9103975.jpg"
+      style="width: 273px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>For putable bond</span><span>, the effective convexity may be </span><span class=" text-color-red">higher</span><span> than that of comparable pure bond.</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/5a6e713c-d936-4610-9723-4bd450a8a6a6-9103975.jpg"
+      style="width: 274px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Credit Analysis</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>The risk of loss resulting from the borrower (issuer of debt)</span><span class=" text-color-red">failing to make full and timely payments</span><span> of interest and/or principal. </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Default risk违约概率</span><span>: </span><span class=" text-color-red">default probability</span><span>, is the probability that a borrower defaults – that is, fails to meet its obligation to make full and timely payments of principal and interest, according to the terms of the debt security;</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Loss given default</span><span class=" text-color-red">, or loss severity</span><span class=" text-color-red">:</span><span> in the event of default, is theportion of a bond’s value (including unpaid interest) an investor loses.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Expected loss  = Default probability  x</span><span class=" text-color-red"> </span><span class=" text-color-red">Loss severity given default</span><span class=" text-color-red"> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Loss severity given default = 1 – Recovery rate;</span><span class=" text-color-red"> </span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Spreadrisk:</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/a8bbcdf7-ff57-4326-ac61-c524e17406d7-9103975.jpg"
+      style="width: 202px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Credit migration (or downgrade risk)</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Market liquidity risk</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Seniority Rankings of Corporate Debt</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Priority of claims: in the event of default, unsecured debt holders claim rank below(i.e., get paid after) those of secured creditors.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Secured debt</span><span> is backed by collateral</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Unsecured debt (debentures)</span><span> represents a general claim to the issuer’s assets </span><span>and cash flows.</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>General seniority ranking for debt repayment priority</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/cdd3f2eb-753c-4ea4-ad7f-e13fb82816ea-9103975.jpg"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Pari Passu</span><span>: </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>All creditors at the same level of the capital structure are treated </span><span class=" text-color-red">as one class</span><span>; thus, a senior unsecured bondholder whose debt is due in 30years has the same pro rata claim in bankruptcy as one whose debt matures in six months. This provision is referred to as bonds ranking</span><span class=" text-color-red"> pari passu (“on an equal footing”)</span><span> in right of payment.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Credit rating</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Investment grade</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Baa3 or above </span><span>by </span><span class=" text-color-red">Moody’s</span><span> Investors Service</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">BBB- or above </span><span>by </span><span class=" text-color-red">Standard &amp; Poor</span><span>’s (S&amp;P) and Fitch Ratings</span><span> </span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Non-investment grade/high yield</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Below investment grade</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Issuer credit rating</span><span class=" text-color-red">发行人评级</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>address an obligor’s overall creditworthiness – its ability and willingness to make timely payments of interest and principal onits debt. </span><span>Issuer credit rating usually applies to its </span><span class=" text-color-red">senior unsecured debt 最接近发行人评级</span><span>.</span><span> </span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Issue ratings </span><span class=" text-color-red">产品评级</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>refer to </span><span class=" text-color-red">specific financial obligations</span><span> of an issuer and take into </span><span>consideration such factors as ranking in the capital structure (e.g., secured </span><span>or subordinated).</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Notching </span><span class=" text-color-red">同一发行人发行不同级别产品</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>a ratings adjustment methodology where specific issues from </span><span>the same borrower may be assigned different credit ratings.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Cross default provision </span><span class=" text-color-red">交差违约条款 （公司发A和B，A违约，B可以索偿）</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Structural subordination </span><span class=" text-color-red">子公司需偿还 利息本金之后才可给母公司输送利润</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>4 Cs</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Capacity</span><span> </span><span>refers to the ability of the borrower to make its debt payments </span><span>on time.</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Industry structure</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Industry fundamentals</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Company fundamentals</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Collateral</span><span> </span><span>refers to the quality and value of the assets supporting the </span><span>issuer’s indebtedness.</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Intangible assets</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Patents</span><span> are considered </span><span class=" text-color-red">high</span><span>-quality /  </span><span class=" text-color-red">Goodwill</span><span> is </span><span class=" text-color-red">not</span><span> considered a high-quality</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Depreciation</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>High depreciation expense relative to capital expenditures may signal </span><span>that management is not investing sufficiently in the company.</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Equity market capitalization</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Human and intellectual capital</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Covenants</span><span> </span><span>are the terms and conditions of lending agreements that the </span><span>issuer must comply with.</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Affirmative covenant</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Negative covenants</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-red">Character</span><span> </span><span>refers to the quality of management.</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Soundness of strategy</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Track record</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Accounting policies and tax strategies</span><span> </span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Fraud and malfeasance record</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Spread Analysis</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Yield on corporate bond= </span><span class=" text-color-yellow">real risk-free interest rate+ expected inflation rate</span><span>+maturity premium+ </span><span class=" text-color-blue">liquidity premium + credit spread</span><span> </span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-blue">Yield spread = liquidity premium + credit spread</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span class=" text-color-yellow">Nominal Risk Free Rate = real risk-free interest rate+ expected inflation rate</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Factors affect the spreads on corporate bonds</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Credit cycle: credit spreads narrows as the credit cycle improves</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Economic conditions: A strengthening economy will cause credit spreads to </span><span>narrow</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Financial market performance: credit spread narrow in strong-performing </span><span>markets overall</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>Broker-dealer capital: yield spreads are narrower when broker-dealers </span><span>provide sufficient capital</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>General market demand and supply: credit spreads narrow in times of high </span><span>demand for bonds</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    <div class="content" ><span>High Yield, Sovereign, and Municipal Debt</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul>
+        
+      </body>
+    </html>
+  
